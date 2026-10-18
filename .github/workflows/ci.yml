@@ -22,13 +22,13 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Format changed platform files
-        run: bunx prettier --write src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md supabase/migrations/20261018194500_create_course_marketplace_schema.sql
+        run: bunx prettier --write src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md
       - name: Commit formatting when needed
         run: |
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md supabase/migrations/20261018194500_create_course_marketplace_schema.sql
+            git add src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md
             git commit -m "style: format course platform implementation"
             git push
           fi

@@ -36,6 +36,37 @@ type Course = {
   description: string;
   thumbnailUrl?: string;
 };
+
+type InstructorStatus = "none" | "pending" | "approved" | "rejected";
+type QueryError = { message: string };
+type InstructorRow = { status: string };
+type InstructorQueryResult = { data: InstructorRow | null; error: QueryError | null };
+type InstructorQuery = {
+  select: (columns: string) => InstructorQuery;
+  eq: (column: string, value: string) => InstructorQuery;
+  maybeSingle: () => Promise<InstructorQueryResult>;
+  insert: (values: { user_id: string; bio: string; status: "pending" }) => InstructorQuery;
+  single: () => Promise<InstructorQueryResult>;
+};
+type CourseDraftRow = { id: string; title: string; status: string };
+type CourseDraftInsert = {
+  insert: (values: {
+    instructor_id: string;
+    title: string;
+    slug: string;
+    subtitle: string;
+    description: string;
+    category: string;
+    level: string;
+    price_cents: number;
+    currency: "BRL";
+    status: "draft";
+  }) => {
+    select: (columns: string) => {
+      single: () => Promise<{ data: CourseDraftRow | null; error: QueryError | null }>;
+    };
+  };
+};
 const courses: Course[] = [
   {
     id: 1,
@@ -151,6 +182,18 @@ function Index() {
   const [authPassword, setAuthPassword] = useState("");
   const [authBusy, setAuthBusy] = useState(false);
   const [authMessage, setAuthMessage] = useState("");
+  const [instructorStatus, setInstructorStatus] = useState<InstructorStatus>("none");
+  const [applicationBusy, setApplicationBusy] = useState(false);
+  const [courseFormOpen, setCourseFormOpen] = useState(false);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftSubtitle, setDraftSubtitle] = useState("");
+  const [draftDescription, setDraftDescription] = useState("");
+  const [draftCategory, setDraftCategory] = useState("Design");
+  const [draftLevel, setDraftLevel] = useState("Iniciante");
+  const [draftPrice, setDraftPrice] = useState("0");
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [draftMessage, setDraftMessage] = useState("");
+  const [createdDrafts, setCreatedDrafts] = useState<CourseDraftRow[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,6 +215,38 @@ function Index() {
       authListener.subscription.unsubscribe();
     };
   }, []);
+
+  const activeUserId = currentUser?.id;
+  useEffect(() => {
+    if (!activeUserId) {
+      setInstructorStatus("none");
+      setCreatedDrafts([]);
+      return;
+    }
+    let active = true;
+    const client = supabase as unknown as {
+      from: (table: "instructor_profiles") => InstructorQuery;
+    };
+    void client
+      .from("instructor_profiles")
+      .select("status")
+      .eq("user_id", activeUserId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (active) {
+          const status = data?.status;
+          setInstructorStatus(status === "approved" || status === "pending" || status === "rejected" ? status : "none");
+        }
+      })
+      .catch((error: unknown) => {
+        console.warn("Não foi possível carregar o status de produtor.", error);
+        if (active) setInstructorStatus("none");
+      });
+    return () => {
+      active = false;
+    };
+  }, [activeUserId]);
 
   const handleAuthSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -227,6 +302,77 @@ function Index() {
     setAuthMessage("");
     setAuthPassword("");
     setAuthOpen(true);
+  };
+
+  const applyAsInstructor = async () => {
+    if (!currentUser) {
+      openAuth("signup");
+      return;
+    }
+    setApplicationBusy(true);
+    try {
+      const client = supabase as unknown as {
+        from: (table: "instructor_profiles") => InstructorQuery;
+      };
+      const { data, error } = await client
+        .from("instructor_profiles")
+        .insert({ user_id: currentUser.id, bio: "", status: "pending" })
+        .select("status")
+        .single();
+      if (error) throw error;
+      setInstructorStatus(data?.status === "approved" ? "approved" : "pending");
+      setNotice("Solicitação enviada. A publicação de cursos será liberada após a aprovação do perfil de produtor.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Não foi possível enviar a solicitação. Verifique se a migração do banco já foi aplicada.");
+    } finally {
+      setApplicationBusy(false);
+    }
+  };
+
+  const handleCreateCourse = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!currentUser || instructorStatus !== "approved") {
+      setDraftMessage("É necessário ter uma conta e aprovação de produtor para criar cursos.");
+      return;
+    }
+    const title = draftTitle.trim();
+    const slug = title.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const numericPrice = Number(draftPrice);
+    if (!title || !slug || !Number.isFinite(numericPrice) || numericPrice < 0) {
+      setDraftMessage("Confira o título e o preço informado.");
+      return;
+    }
+    setDraftBusy(true);
+    setDraftMessage("");
+    try {
+      const client = supabase as unknown as {
+        from: (table: "courses") => CourseDraftInsert;
+      };
+      const { data, error } = await client.from("courses").insert({
+        instructor_id: currentUser.id,
+        title,
+        slug,
+        subtitle: draftSubtitle.trim(),
+        description: draftDescription.trim(),
+        category: draftCategory,
+        level: draftLevel,
+        price_cents: Math.round(numericPrice * 100),
+        currency: "BRL",
+        status: "draft",
+      }).select("id,title,status").single();
+      if (error) throw error;
+      if (data) setCreatedDrafts((previous) => [data, ...previous]);
+      setCourseFormOpen(false);
+      setDraftTitle("");
+      setDraftSubtitle("");
+      setDraftDescription("");
+      setDraftPrice("0");
+      setNotice("Rascunho salvo no banco de dados. Adicione módulos e aulas antes de publicar o curso.");
+    } catch (error) {
+      setDraftMessage(error instanceof Error ? error.message : "Não foi possível salvar o curso. Confira a migração do banco e as permissões do perfil.");
+    } finally {
+      setDraftBusy(false);
+    }
   };
 
   useEffect(() => {

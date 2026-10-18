@@ -32,7 +32,6 @@ npm run build
 
 Esta versão é uma interface de demonstração. Ainda é necessário integrar autenticação e permissões, banco de dados, armazenamento protegido de vídeos e materiais, checkout com provedor de pagamento, confirmação de pagamento por webhook, regras de acesso aos cursos, gestão de reembolsos e testes de segurança. Os preços e cursos exibidos são dados fictícios e nenhum pagamento é processado.
 
-
 ## Banco de dados (Supabase / Lovable Cloud)
 
 A migração inicial está em `supabase/migrations/20261018194500_create_course_marketplace_schema.sql`. Ela define perfis, cadastro de instrutores, cursos, módulos, aulas, pedidos, matrículas, progresso, avaliações, buckets de mídia e políticas RLS.

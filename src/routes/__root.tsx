@@ -79,13 +79,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Cursos | Plataforma de aprendizado" },
-      { name: "description", content: "Explore cursos online, desenvolva habilidades e acompanhe sua jornada de aprendizado." },
+      {
+        name: "description",
+        content:
+          "Explore cursos online, desenvolva habilidades e acompanhe sua jornada de aprendizado.",
+      },
       { name: "author", content: "Equipe da plataforma" },
       { property: "og:title", content: "Cursos | Plataforma de aprendizado" },
-      { property: "og:description", content: "Cursos online para aprender no seu ritmo e desenvolver novas habilidades." },
+      {
+        property: "og:description",
+        content: "Cursos online para aprender no seu ritmo e desenvolver novas habilidades.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      
     ],
     links: [
       {

@@ -166,19 +166,14 @@ function Index() {
         type CourseQuery = {
           select: (columns: string) => CourseQuery;
           eq: (column: string, value: string) => CourseQuery;
-          order: (
-            column: string,
-            options: { ascending: boolean },
-          ) => Promise<CourseQueryResult>;
+          order: (column: string, options: { ascending: boolean }) => Promise<CourseQueryResult>;
         };
         const client = supabase as unknown as {
           from: (table: "courses") => CourseQuery;
         };
         const { data, error } = await client
           .from("courses")
-          .select(
-            "id,title,subtitle,description,category,level,price_cents,thumbnail_url",
-          )
+          .select("id,title,subtitle,description,category,level,price_cents,thumbnail_url")
           .eq("status", "published")
           .order("published_at", { ascending: false });
         if (error) throw error;

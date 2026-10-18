@@ -293,4 +293,138 @@ grant select on public.orders, public.order_items, public.enrollments to authent
 grant select, insert, delete on public.lesson_progress to authenticated;
 grant insert, update, delete on public.course_reviews to authenticated;
 
+
+-- Private course media: uploads are restricted to approved instructors.
+-- Store objects as <course_uuid>/<section_uuid>/<filename>.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'course-media',
+  'course-media',
+  false,
+  1073741824,
+  array['video/mp4', 'video/webm', 'application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update set
+  public = false,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+-- Public thumbnails are separate from protected course content.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'course-thumbnails',
+  'course-thumbnails',
+  true,
+  5242880,
+  array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update set
+  public = true,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "course_media_select_enrolled_or_owner" on storage.objects;
+create policy "course_media_select_enrolled_or_owner"
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'course-media'
+  and exists (
+    select 1
+    from public.courses c
+    where c.id::text = split_part(name, '/', 1)
+      and (
+        c.instructor_id = (select auth.uid())
+        or exists (
+          select 1 from public.enrollments e
+          where e.course_id = c.id and e.student_id = (select auth.uid())
+        )
+      )
+  )
+);
+
+drop policy if exists "course_media_insert_approved_owner" on storage.objects;
+create policy "course_media_insert_approved_owner"
+on storage.objects for insert to authenticated
+with check (
+  bucket_id = 'course-media'
+  and exists (
+    select 1
+    from public.courses c
+    join public.instructor_profiles ip on ip.user_id = c.instructor_id
+    where c.id::text = split_part(name, '/', 1)
+      and c.instructor_id = (select auth.uid())
+      and ip.status = 'approved'
+      and c.status in ('draft', 'review', 'published')
+  )
+);
+
+drop policy if exists "course_media_update_owner" on storage.objects;
+create policy "course_media_update_owner"
+on storage.objects for update to authenticated
+using (
+  bucket_id = 'course-media'
+  and exists (
+    select 1 from public.courses c
+    where c.id::text = split_part(name, '/', 1)
+      and c.instructor_id = (select auth.uid())
+  )
+)
+with check (
+  bucket_id = 'course-media'
+  and exists (
+    select 1 from public.courses c
+    where c.id::text = split_part(name, '/', 1)
+      and c.instructor_id = (select auth.uid())
+  )
+);
+
+drop policy if exists "course_media_delete_owner" on storage.objects;
+create policy "course_media_delete_owner"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'course-media'
+  and exists (
+    select 1 from public.courses c
+    where c.id::text = split_part(name, '/', 1)
+      and c.instructor_id = (select auth.uid())
+  )
+);
+
+drop policy if exists "course_thumbnails_public_read" on storage.objects;
+create policy "course_thumbnails_public_read"
+on storage.objects for select to anon, authenticated
+using (bucket_id = 'course-thumbnails');
+
+drop policy if exists "course_thumbnails_insert_approved_instructor" on storage.objects;
+create policy "course_thumbnails_insert_approved_instructor"
+on storage.objects for insert to authenticated
+with check (
+  bucket_id = 'course-thumbnails'
+  and split_part(name, '/', 1) = (select auth.uid())::text
+  and exists (
+    select 1 from public.instructor_profiles ip
+    where ip.user_id = (select auth.uid()) and ip.status = 'approved'
+  )
+);
+
+drop policy if exists "course_thumbnails_update_owner" on storage.objects;
+create policy "course_thumbnails_update_owner"
+on storage.objects for update to authenticated
+using (
+  bucket_id = 'course-thumbnails'
+  and split_part(name, '/', 1) = (select auth.uid())::text
+)
+with check (
+  bucket_id = 'course-thumbnails'
+  and split_part(name, '/', 1) = (select auth.uid())::text
+);
+
+drop policy if exists "course_thumbnails_delete_owner" on storage.objects;
+create policy "course_thumbnails_delete_owner"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'course-thumbnails'
+  and split_part(name, '/', 1) = (select auth.uid())::text
+);
+
 commit;

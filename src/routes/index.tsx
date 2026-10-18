@@ -336,7 +336,7 @@ function Index() {
       return;
     }
     const title = draftTitle.trim();
-    const slug = title.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const slug = title.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     const numericPrice = Number(draftPrice);
     if (!title || !slug || !Number.isFinite(numericPrice) || numericPrice < 0) {
       setDraftMessage("Confira o título e o preço informado.");

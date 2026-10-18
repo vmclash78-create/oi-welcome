@@ -470,11 +470,14 @@ function Index() {
           >
             Para produtores
           </button>
-          <button className="nav-item mobile-auth-link" onClick={() => {
-            if (currentUser) void handleSignOut();
-            else openAuth("signin");
-            setMenuOpen(false);
-          }}>
+          <button
+            className="nav-item mobile-auth-link"
+            onClick={() => {
+              if (currentUser) void handleSignOut();
+              else openAuth("signin");
+              setMenuOpen(false);
+            }}
+          >
             {currentUser ? "Sair da conta" : "Entrar"}
           </button>
         </nav>

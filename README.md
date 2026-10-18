@@ -1,24 +1,33 @@
-# Oi Welcome
+# Plataforma de cursos
 
-Oi
+Projeto de uma plataforma para comercialização e consumo de cursos online, desenvolvido com React, TypeScript, TanStack Start e Vite.
 
-This project was built with [Lovable](https://lovable.dev).
+## Funcionalidades demonstrativas atuais
 
-## Build with Lovable
+- Catálogo de cursos com busca e filtros por categoria.
+- Página de detalhes do curso e apresentação de preço.
+- Área do aluno com biblioteca e progresso local de aulas.
+- Área do produtor com painel inicial e checklist de publicação.
+- Layout responsivo para celular e desktop.
+- Avisos explícitos onde checkout e integrações ainda não estão conectados.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/1b58f714-758d-4afc-93e6-2171861b8caf).
+## Executar localmente
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requisitos: Node.js e npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Verificações disponíveis:
+
+```sh
+npm run lint
+npm run test
+npm run build
+```
+
+## Antes de colocar em produção
+
+Esta versão é uma interface de demonstração. Ainda é necessário integrar autenticação e permissões, banco de dados, armazenamento protegido de vídeos e materiais, checkout com provedor de pagamento, confirmação de pagamento por webhook, regras de acesso aos cursos, gestão de reembolsos e testes de segurança. Os preços e cursos exibidos são dados fictícios e nenhum pagamento é processado.

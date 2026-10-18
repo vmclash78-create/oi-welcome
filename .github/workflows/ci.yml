@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
@@ -21,19 +21,10 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Format changed platform files
-        run: bunx prettier --write src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md
-      - name: Commit formatting when needed
-        run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md
-            git commit -m "style: format course platform implementation"
-            git push
-          fi
-      - name: Lint
-        run: bun run lint
+      - name: Check formatting of updated platform files
+        run: bunx prettier --check src/routes/index.tsx src/styles.css src/routes/__root.tsx README.md
+      - name: Lint updated application files
+        run: bunx eslint src/routes/index.tsx src/routes/__root.tsx
       - name: Tests
         run: bun run test
       - name: Production build

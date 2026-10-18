@@ -149,10 +149,36 @@ function Index() {
       try {
         // The project keeps generated Supabase table types empty until they are regenerated.
         // Keep the query boundary isolated here so the rest of the page remains typed.
-        const client = supabase as unknown as { from: (table: string) => any };
+        type PublishedCourseRow = {
+          id: string;
+          title: string;
+          subtitle: string | null;
+          description: string | null;
+          category: string | null;
+          level: string | null;
+          price_cents: number;
+          thumbnail_url: string | null;
+        };
+        type CourseQueryResult = {
+          data: PublishedCourseRow[] | null;
+          error: { message: string } | null;
+        };
+        type CourseQuery = {
+          select: (columns: string) => CourseQuery;
+          eq: (column: string, value: string) => CourseQuery;
+          order: (
+            column: string,
+            options: { ascending: boolean },
+          ) => Promise<CourseQueryResult>;
+        };
+        const client = supabase as unknown as {
+          from: (table: "courses") => CourseQuery;
+        };
         const { data, error } = await client
           .from("courses")
-          .select("id,title,subtitle,description,category,level,price_cents,thumbnail_url")
+          .select(
+            "id,title,subtitle,description,category,level,price_cents,thumbnail_url",
+          )
           .eq("status", "published")
           .order("published_at", { ascending: false });
         if (error) throw error;

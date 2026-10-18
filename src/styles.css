@@ -1617,3 +1617,19 @@ summary:focus-visible {
 
 .mobile-auth-link { display: none; }
 @media (max-width: 640px) { .mobile-auth-link { display: block; } }
+
+.form-textarea, .auth-form select { width: 100%; box-sizing: border-box; padding: 12px 13px; border: 1px solid #e5e3dc; border-radius: 8px; background: #fbfaf7; color: #2b2f28; font: inherit; font-size: 12px; resize: vertical; }
+.form-textarea:focus, .auth-form select:focus { border-color: #8a9b7d; outline: 2px solid #8a9b7d2e; }
+.form-two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.course-form-modal { width: min(560px, 100%); }
+.producer-status { max-width: 470px; padding: 11px 13px; border-radius: 8px; font-size: 12px !important; }
+.producer-pending { background: #f5eee2; color: #75552e !important; }
+.producer-rejected { background: #f7e9e7; color: #874a43 !important; }
+.draft-list { padding-top: 0; min-height: 0; }
+.draft-row { display: flex; align-items: center; gap: 14px; padding: 16px; margin-top: 10px; border: 1px solid #e8e6df; border-radius: 10px; background: #fff; }
+.draft-row > svg { color: #738967; flex-shrink: 0; }
+.draft-row > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.draft-row strong { font-size: 13px; overflow-wrap: anywhere; }
+.draft-row small, .draft-row > span { color: #77796f; font-size: 10px; }
+.draft-row > span { margin-left: auto; text-transform: uppercase; }
+@media (max-width: 640px) { .form-two-columns { grid-template-columns: 1fr; } }

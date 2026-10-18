@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowRight,
@@ -142,6 +143,84 @@ function Index() {
   const [progress, setProgress] = useState<Record<string, number>>({ "3": 35 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [liveCourses, setLiveCourses] = useState<Course[] | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string | null } | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
+  const [authName, setAuthName] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authMessage, setAuthMessage] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) {
+        const user = data.session?.user;
+        setCurrentUser(user ? { id: user.id, email: user.email ?? null } : null);
+      }
+    }).catch((error: unknown) => console.warn("Não foi possível recuperar a sessão.", error));
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+      setCurrentUser(user ? { id: user.id, email: user.email ?? null } : null);
+    });
+    return () => {
+      cancelled = true;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleAuthSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthBusy(true);
+    setAuthMessage("");
+    try {
+      if (authMode === "signup") {
+        const { data, error } = await supabase.auth.signUp({
+          email: authEmail.trim(),
+          password: authPassword,
+          options: { data: { display_name: authName.trim() } },
+        });
+        if (error) throw error;
+        if (data.session) {
+          setAuthOpen(false);
+          setNotice("Conta criada com sucesso.");
+        } else {
+          setAuthMessage("Conta iniciada. Confira seu e-mail para confirmar o cadastro antes de entrar.");
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: authEmail.trim(),
+          password: authPassword,
+        });
+        if (error) throw error;
+        setAuthOpen(false);
+        setNotice("Login realizado com sucesso.");
+      }
+      setAuthPassword("");
+    } catch (error) {
+      setAuthMessage(error instanceof Error ? error.message : "Não foi possível autenticar. Tente novamente.");
+    } finally {
+      setAuthBusy(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      showNotice("Não foi possível sair da conta. Tente novamente.");
+      return;
+    }
+    setCurrentUser(null);
+    setNotice("Você saiu da sua conta.");
+  };
+
+  const openAuth = (mode: "signin" | "signup") => {
+    setAuthMode(mode);
+    setAuthMessage("");
+    setAuthPassword("");
+    setAuthOpen(true);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -209,7 +288,7 @@ function Index() {
               color: colors.color,
               accent: colors.accent,
               mark: row.title
-                .split(/\\s+/)
+                .split(/\s+/)
                 .slice(0, 2)
                 .map((word: string) => word[0] || "")
                 .join("")
@@ -384,13 +463,10 @@ function Index() {
           </button>
         </nav>
         <div className="header-actions">
-          <button
-            className="login"
-            onClick={() => showNotice("A autenticação será conectada ao backend na próxima etapa.")}
-          >
-            Entrar
+          <button className="login" onClick={() => currentUser ? void handleSignOut() : openAuth("signin")}>
+            {currentUser ? "Sair da conta" : "Entrar"}
           </button>
-          <button className="button button-dark" onClick={() => setView("creator")}>
+          <button className="button button-dark" onClick={() => currentUser ? setView("creator") : openAuth("signup")}>
             Quero ensinar <ArrowRight size={16} />
           </button>
         </div>
@@ -765,6 +841,49 @@ function Index() {
             ← Voltar ao catálogo
           </button>
         </main>
+      )}
+      {authOpen && (
+        <div
+          className="modal-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !authBusy) setAuthOpen(false);
+          }}
+        >
+          <section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+            <button className="modal-x" aria-label="Fechar" onClick={() => setAuthOpen(false)} disabled={authBusy}>
+              <X />
+            </button>
+            <span className="section-kicker">{authMode === "signup" ? "CRIE SUA CONTA" : "BEM-VINDO DE VOLTA"}</span>
+            <h2 id="auth-title">{authMode === "signup" ? "Comece sua jornada." : "Entre na sua conta."}</h2>
+            <p>{authMode === "signup" ? "Crie seu acesso para acompanhar cursos e preparar seu espaço de produtor." : "Acesse sua biblioteca e continue aprendendo."}</p>
+            <form className="auth-form" onSubmit={handleAuthSubmit}>
+              {authMode === "signup" && (
+                <label>
+                  Nome
+                  <input value={authName} onChange={(event) => setAuthName(event.target.value)} autoComplete="name" required minLength={2} maxLength={100} placeholder="Como podemos chamar você?" />
+                </label>
+              )}
+              <label>
+                E-mail
+                <input type="email" value={authEmail} onChange={(event) => setAuthEmail(event.target.value)} autoComplete="email" required maxLength={254} placeholder="voce@exemplo.com" />
+              </label>
+              <label>
+                Senha
+                <input type="password" value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} autoComplete={authMode === "signup" ? "new-password" : "current-password"} required minLength={6} maxLength={128} placeholder="Pelo menos 6 caracteres" />
+              </label>
+              {authMessage && <p className="auth-message" role="status">{authMessage}</p>}
+              <button className="button button-dark auth-submit" type="submit" disabled={authBusy}>
+                {authBusy ? "Aguarde..." : authMode === "signup" ? "Criar conta" : "Entrar"} <ArrowRight size={16} />
+              </button>
+            </form>
+            <p className="auth-switch">
+              {authMode === "signup" ? "Já tem uma conta?" : "Ainda não tem conta?"}{" "}
+              <button className="button button-text" onClick={() => openAuth(authMode === "signup" ? "signin" : "signup")} disabled={authBusy}>
+                {authMode === "signup" ? "Entrar" : "Criar conta"}
+              </button>
+            </p>
+          </section>
+        </div>
       )}
       {selected && (
         <div

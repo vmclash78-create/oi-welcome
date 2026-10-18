@@ -675,7 +675,7 @@ function Index() {
                 >
                   Encontrar meu próximo curso <ArrowRight size={17} />
                 </button>
-                <button className="button button-text" onClick={() => setView("creator")}>
+                <button className="button button-text" onClick={() => currentUser ? setView("creator") : openAuth("signup")}>
                   Quero ensinar ↗
                 </button>
               </div>
@@ -965,19 +965,27 @@ function Index() {
           </p>
           <div className="creator-welcome">
             <div>
-              <span className="eyebrow">PAINEL DE DEMONSTRAÇÃO</span>
+              <span className="eyebrow">
+                {instructorStatus === "approved" ? "PRODUTOR APROVADO" : instructorStatus === "pending" ? "SOLICITAÇÃO EM ANÁLISE" : "ÁREA DO PRODUTOR"}
+              </span>
               <h2>Ensine o que você sabe.</h2>
               <p>Estruture seu conteúdo e prepare seu primeiro curso para seus alunos.</p>
-              <button
-                className="button button-dark"
-                onClick={() =>
-                  showNotice(
-                    "O cadastro de produtor será conectado à autenticação e ao banco de dados.",
-                  )
-                }
-              >
-                Criar meu primeiro curso <ArrowRight size={16} />
-              </button>
+              {instructorStatus === "none" && (
+                <button className="button button-dark" onClick={() => void applyAsInstructor()} disabled={applicationBusy}>
+                  {applicationBusy ? "Enviando..." : "Solicitar acesso de produtor"} <ArrowRight size={16} />
+                </button>
+              )}
+              {instructorStatus === "pending" && (
+                <p className="producer-status producer-pending">Sua solicitação foi recebida. A criação de cursos será liberada após a aprovação.</p>
+              )}
+              {instructorStatus === "rejected" && (
+                <p className="producer-status producer-rejected">A solicitação não foi aprovada. Entre em contato com o suporte para revisar o cadastro.</p>
+              )}
+              {instructorStatus === "approved" && (
+                <button className="button button-dark" onClick={() => { setDraftMessage(""); setCourseFormOpen(true); }}>
+                  Criar novo curso <ArrowRight size={16} />
+                </button>
+              )}
             </div>
             <GraduationCap size={86} strokeWidth={1.1} />
           </div>
@@ -1003,8 +1011,8 @@ function Index() {
             <div>
               <h3>Antes de vender de verdade</h3>
               <p>
-                Precisaremos integrar login, banco de dados, upload de aulas, checkout, confirmação
-                por webhook e controle de acesso aos cursos.
+                O catálogo e o cadastro de cursos usam o Supabase. Para vender, ainda será necessário
+                conectar o checkout a um provedor de pagamento e confirmar pedidos por webhook seguro.
               </p>
             </div>
           </div>
@@ -1012,6 +1020,79 @@ function Index() {
             ← Voltar ao catálogo
           </button>
         </main>
+      )}
+      {courseFormOpen && (
+        <div
+          className="modal-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !draftBusy) setCourseFormOpen(false);
+          }}
+        >
+          <section className="auth-modal course-form-modal" role="dialog" aria-modal="true" aria-labelledby="draft-course-title">
+            <button className="modal-x" aria-label="Fechar" onClick={() => setCourseFormOpen(false)} disabled={draftBusy}>
+              <X />
+            </button>
+            <span className="section-kicker">NOVO RASCUNHO</span>
+            <h2 id="draft-course-title">Monte seu curso.</h2>
+            <p>Salve as informações iniciais. O curso ficará como rascunho até você adicionar o conteúdo e publicá-lo.</p>
+            <form className="auth-form" onSubmit={handleCreateCourse}>
+              <label>
+                Título do curso
+                <input value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)} required minLength={3} maxLength={180} placeholder="Ex.: Fotografia para pequenos negócios" />
+              </label>
+              <label>
+                Subtítulo
+                <input value={draftSubtitle} onChange={(event) => setDraftSubtitle(event.target.value)} maxLength={240} placeholder="O que o aluno vai aprender?" />
+              </label>
+              <label>
+                Descrição
+                <textarea className="form-textarea" value={draftDescription} onChange={(event) => setDraftDescription(event.target.value)} maxLength={10000} rows={4} placeholder="Descreva o conteúdo e para quem ele é indicado." />
+              </label>
+              <div className="form-two-columns">
+                <label>
+                  Categoria
+                  <select value={draftCategory} onChange={(event) => setDraftCategory(event.target.value)}>
+                    <option>Design</option>
+                    <option>Tecnologia</option>
+                    <option>Marketing</option>
+                    <option>Negócios</option>
+                    <option>Criatividade</option>
+                    <option>Geral</option>
+                  </select>
+                </label>
+                <label>
+                  Nível
+                  <select value={draftLevel} onChange={(event) => setDraftLevel(event.target.value)}>
+                    <option>Iniciante</option>
+                    <option>Intermediário</option>
+                    <option>Avançado</option>
+                    <option>Todos os níveis</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Preço (R$)
+                <input type="number" value={draftPrice} onChange={(event) => setDraftPrice(event.target.value)} min="0" max="100000" step="0.01" required />
+              </label>
+              {draftMessage && <p className="auth-message" role="status">{draftMessage}</p>}
+              <button className="button button-dark auth-submit" type="submit" disabled={draftBusy}>
+                {draftBusy ? "Salvando..." : "Salvar como rascunho"} <ArrowRight size={16} />
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
+      {createdDrafts.length > 0 && view === "creator" && (
+        <section className="workspace draft-list">
+          <h2 className="workspace-subtitle">Rascunhos criados nesta sessão</h2>
+          {createdDrafts.map((draft) => (
+            <div className="draft-row" key={draft.id}>
+              <BookOpen size={19} />
+              <div><strong>{draft.title}</strong><small>Rascunho · ainda não visível no catálogo</small></div>
+              <span>{draft.status}</span>
+            </div>
+          ))}
+        </section>
       )}
       {authOpen && (
         <div

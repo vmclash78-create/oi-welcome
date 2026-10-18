@@ -453,7 +453,8 @@ function Index() {
           <button
             className={view === "student" ? "nav-item nav-active" : "nav-item"}
             onClick={() => {
-              setView("student");
+              if (currentUser) setView("student");
+              else openAuth("signin");
               setMenuOpen(false);
             }}
           >
@@ -462,11 +463,19 @@ function Index() {
           <button
             className={view === "creator" ? "nav-item nav-active" : "nav-item"}
             onClick={() => {
-              setView("creator");
+              if (currentUser) setView("creator");
+              else openAuth("signup");
               setMenuOpen(false);
             }}
           >
             Para produtores
+          </button>
+          <button className="nav-item mobile-auth-link" onClick={() => {
+            if (currentUser) void handleSignOut();
+            else openAuth("signin");
+            setMenuOpen(false);
+          }}>
+            {currentUser ? "Sair da conta" : "Entrar"}
           </button>
         </nav>
         <div className="header-actions">

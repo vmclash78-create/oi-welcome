@@ -1614,3 +1614,6 @@ summary:focus-visible {
 .auth-switch { display: flex; align-items: center; justify-content: center; gap: 4px; margin: 20px 0 0 !important; }
 .auth-switch .button { font-size: 11px; }
 @media (max-width: 640px) { .auth-modal { padding: 30px 22px 24px; } .auth-modal h2 { font-size: 27px; } }
+
+.mobile-auth-link { display: none; }
+@media (max-width: 640px) { .mobile-auth-link { display: block; } }

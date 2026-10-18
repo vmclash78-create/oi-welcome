@@ -1216,8 +1216,8 @@ function Index() {
               className="modal-art"
               style={{ background: selected.color, color: selected.accent }}
             >
-              {selected.thumbnailUrl && (
-                <img className="modal-thumb" src={selected.thumbnailUrl} alt="" />
+              {(selected.thumbnailUrl || selected.imageUrl) && (
+                <img className="modal-thumb" src={selected.thumbnailUrl || selected.imageUrl} alt="" />
               )}
               <span>{selected.category}</span>
               <strong>{selected.mark}</strong>

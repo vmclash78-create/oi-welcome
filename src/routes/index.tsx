@@ -154,12 +154,15 @@ function Index() {
 
   useEffect(() => {
     let cancelled = false;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) {
-        const user = data.session?.user;
-        setCurrentUser(user ? { id: user.id, email: user.email ?? null } : null);
-      }
-    }).catch((error: unknown) => console.warn("Não foi possível recuperar a sessão.", error));
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!cancelled) {
+          const user = data.session?.user;
+          setCurrentUser(user ? { id: user.id, email: user.email ?? null } : null);
+        }
+      })
+      .catch((error: unknown) => console.warn("Não foi possível recuperar a sessão.", error));
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       const user = session?.user;
       setCurrentUser(user ? { id: user.id, email: user.email ?? null } : null);
@@ -186,7 +189,9 @@ function Index() {
           setAuthOpen(false);
           setNotice("Conta criada com sucesso.");
         } else {
-          setAuthMessage("Conta iniciada. Confira seu e-mail para confirmar o cadastro antes de entrar.");
+          setAuthMessage(
+            "Conta iniciada. Confira seu e-mail para confirmar o cadastro antes de entrar.",
+          );
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -199,7 +204,9 @@ function Index() {
       }
       setAuthPassword("");
     } catch (error) {
-      setAuthMessage(error instanceof Error ? error.message : "Não foi possível autenticar. Tente novamente.");
+      setAuthMessage(
+        error instanceof Error ? error.message : "Não foi possível autenticar. Tente novamente.",
+      );
     } finally {
       setAuthBusy(false);
     }
@@ -463,10 +470,16 @@ function Index() {
           </button>
         </nav>
         <div className="header-actions">
-          <button className="login" onClick={() => currentUser ? void handleSignOut() : openAuth("signin")}>
+          <button
+            className="login"
+            onClick={() => (currentUser ? void handleSignOut() : openAuth("signin"))}
+          >
             {currentUser ? "Sair da conta" : "Entrar"}
           </button>
-          <button className="button button-dark" onClick={() => currentUser ? setView("creator") : openAuth("signup")}>
+          <button
+            className="button button-dark"
+            onClick={() => (currentUser ? setView("creator") : openAuth("signup"))}
+          >
             Quero ensinar <ArrowRight size={16} />
           </button>
         </div>
@@ -849,36 +862,88 @@ function Index() {
             if (event.target === event.currentTarget && !authBusy) setAuthOpen(false);
           }}
         >
-          <section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-            <button className="modal-x" aria-label="Fechar" onClick={() => setAuthOpen(false)} disabled={authBusy}>
+          <section
+            className="auth-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-title"
+          >
+            <button
+              className="modal-x"
+              aria-label="Fechar"
+              onClick={() => setAuthOpen(false)}
+              disabled={authBusy}
+            >
               <X />
             </button>
-            <span className="section-kicker">{authMode === "signup" ? "CRIE SUA CONTA" : "BEM-VINDO DE VOLTA"}</span>
-            <h2 id="auth-title">{authMode === "signup" ? "Comece sua jornada." : "Entre na sua conta."}</h2>
-            <p>{authMode === "signup" ? "Crie seu acesso para acompanhar cursos e preparar seu espaço de produtor." : "Acesse sua biblioteca e continue aprendendo."}</p>
+            <span className="section-kicker">
+              {authMode === "signup" ? "CRIE SUA CONTA" : "BEM-VINDO DE VOLTA"}
+            </span>
+            <h2 id="auth-title">
+              {authMode === "signup" ? "Comece sua jornada." : "Entre na sua conta."}
+            </h2>
+            <p>
+              {authMode === "signup"
+                ? "Crie seu acesso para acompanhar cursos e preparar seu espaço de produtor."
+                : "Acesse sua biblioteca e continue aprendendo."}
+            </p>
             <form className="auth-form" onSubmit={handleAuthSubmit}>
               {authMode === "signup" && (
                 <label>
                   Nome
-                  <input value={authName} onChange={(event) => setAuthName(event.target.value)} autoComplete="name" required minLength={2} maxLength={100} placeholder="Como podemos chamar você?" />
+                  <input
+                    value={authName}
+                    onChange={(event) => setAuthName(event.target.value)}
+                    autoComplete="name"
+                    required
+                    minLength={2}
+                    maxLength={100}
+                    placeholder="Como podemos chamar você?"
+                  />
                 </label>
               )}
               <label>
                 E-mail
-                <input type="email" value={authEmail} onChange={(event) => setAuthEmail(event.target.value)} autoComplete="email" required maxLength={254} placeholder="voce@exemplo.com" />
+                <input
+                  type="email"
+                  value={authEmail}
+                  onChange={(event) => setAuthEmail(event.target.value)}
+                  autoComplete="email"
+                  required
+                  maxLength={254}
+                  placeholder="voce@exemplo.com"
+                />
               </label>
               <label>
                 Senha
-                <input type="password" value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} autoComplete={authMode === "signup" ? "new-password" : "current-password"} required minLength={6} maxLength={128} placeholder="Pelo menos 6 caracteres" />
+                <input
+                  type="password"
+                  value={authPassword}
+                  onChange={(event) => setAuthPassword(event.target.value)}
+                  autoComplete={authMode === "signup" ? "new-password" : "current-password"}
+                  required
+                  minLength={6}
+                  maxLength={128}
+                  placeholder="Pelo menos 6 caracteres"
+                />
               </label>
-              {authMessage && <p className="auth-message" role="status">{authMessage}</p>}
+              {authMessage && (
+                <p className="auth-message" role="status">
+                  {authMessage}
+                </p>
+              )}
               <button className="button button-dark auth-submit" type="submit" disabled={authBusy}>
-                {authBusy ? "Aguarde..." : authMode === "signup" ? "Criar conta" : "Entrar"} <ArrowRight size={16} />
+                {authBusy ? "Aguarde..." : authMode === "signup" ? "Criar conta" : "Entrar"}{" "}
+                <ArrowRight size={16} />
               </button>
             </form>
             <p className="auth-switch">
               {authMode === "signup" ? "Já tem uma conta?" : "Ainda não tem conta?"}{" "}
-              <button className="button button-text" onClick={() => openAuth(authMode === "signup" ? "signin" : "signup")} disabled={authBusy}>
+              <button
+                className="button button-text"
+                onClick={() => openAuth(authMode === "signup" ? "signin" : "signup")}
+                disabled={authBusy}
+              >
                 {authMode === "signup" ? "Entrar" : "Criar conta"}
               </button>
             </p>

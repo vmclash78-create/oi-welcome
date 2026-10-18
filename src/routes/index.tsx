@@ -35,6 +35,7 @@ type Course = {
   mark: string;
   description: string;
   thumbnailUrl?: string;
+  imageUrl?: string;
 };
 
 type InstructorStatus = "none" | "pending" | "approved" | "rejected";
@@ -71,6 +72,7 @@ const courses: Course[] = [
   {
     id: 1,
     title: "Design de interfaces do zero",
+    imageUrl: "/images/course-design.svg",
     teacher: "Marina Costa",
     category: "Design",
     level: "Iniciante",
@@ -87,6 +89,7 @@ const courses: Course[] = [
   {
     id: 2,
     title: "Marketing digital na prática",
+    imageUrl: "/images/course-marketing.svg",
     teacher: "Rafael Mendes",
     category: "Marketing",
     level: "Intermediário",
@@ -103,6 +106,7 @@ const courses: Course[] = [
   {
     id: 3,
     title: "Programação web com React",
+    imageUrl: "/images/course-code.svg",
     teacher: "Lucas Almeida",
     category: "Tecnologia",
     level: "Intermediário",
@@ -118,6 +122,7 @@ const courses: Course[] = [
   {
     id: 4,
     title: "Fotografia para negócios",
+    imageUrl: "/images/course-photo.svg",
     teacher: "Camila Rocha",
     category: "Criatividade",
     level: "Iniciante",
@@ -133,6 +138,7 @@ const courses: Course[] = [
   {
     id: 5,
     title: "Finanças para empreendedores",
+    imageUrl: "/images/course-finance.svg",
     teacher: "André Ribeiro",
     category: "Negócios",
     level: "Iniciante",
@@ -148,6 +154,7 @@ const courses: Course[] = [
   {
     id: 6,
     title: "Conteúdo que vende",
+    imageUrl: "/images/course-content.svg",
     teacher: "Bianca Alves",
     category: "Marketing",
     level: "Iniciante",
@@ -694,7 +701,7 @@ function Index() {
                 </div>
               </div>
             </div>
-            <div className="hero-visual">
+            <div className="hero-visual hero-visual-photo">
               <div className="hero-ring ring-one" />
               <div className="hero-ring ring-two" />
               <div className="floating-note note-one">
@@ -707,7 +714,7 @@ function Index() {
                 </span>
               </div>
               <div className="feature-card">
-                <div className="feature-cover">
+                <div className="feature-cover">\n                  <img className="hero-art-image" src="/images/learning-hero.svg" alt="" fetchPriority="high" />
                   <span className="feature-label">EM DESTAQUE</span>
                   <div className="feature-shape shape-a" />
                   <div className="feature-shape shape-b" />

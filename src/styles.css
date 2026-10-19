@@ -1731,3 +1731,42 @@ summary:focus-visible {
   .course-content { padding-inline: 13px; }
   .course-details { font-size: 11px; }
 }
+
+/* Admin dashboard: desktop-first, responsive on mobile */
+.admin-shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 74px);background:#f5f3ec;color:#202a23}
+.admin-sidebar{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:8px;min-height:calc(100vh - 74px);padding:25px 16px;background:#10291f;color:#f7f5ed}
+.admin-brand{display:flex;align-items:center;gap:10px;padding:0 8px 28px;font-weight:750;font-size:17px}
+.admin-brand svg{color:#65bc75}
+.admin-side-label{padding:12px 8px;color:#9eb5a2;font-size:10px;font-weight:800;letter-spacing:1.4px}
+.admin-sidebar>button{display:flex;align-items:center;gap:10px;border:0;border-radius:8px;padding:12px 10px;background:transparent;color:#d9e2d8;text-align:left;font:inherit;font-size:12px;cursor:pointer}
+.admin-sidebar>button:hover,.admin-sidebar>button.admin-side-active{background:#1e6243;color:white}
+.admin-sidebar-bottom{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding:20px 8px 0;border-top:1px solid #ffffff20;overflow-wrap:anywhere}
+.admin-sidebar-bottom span{color:#9eb5a2;font-size:10px}.admin-sidebar-bottom strong{font-size:11px}
+.admin-main{min-width:0;padding:34px clamp(18px,3vw,44px) 55px}
+.admin-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px}
+.admin-heading h1{margin:7px 0;font-size:clamp(26px,3vw,36px);letter-spacing:-1.2px}
+.admin-heading p,.admin-panel-heading p{margin:0;color:#74786e;font-size:12px;line-height:1.6}
+.admin-demo-note{display:flex;align-items:flex-start;gap:10px;margin-bottom:22px;padding:13px 15px;border:1px solid #d9e2d2;border-radius:10px;background:#eaf0e5;color:#52624e;font-size:11px;line-height:1.6}
+.admin-demo-note svg{flex-shrink:0}
+.admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.admin-metrics article{display:flex;flex-direction:column;gap:9px;min-width:0;padding:20px;border:1px solid #e7e5dc;border-radius:12px;background:#fff}
+.admin-metrics article>span{color:#686e64;font-size:11px}.admin-metrics article>strong{font-size:clamp(20px,2.3vw,28px);letter-spacing:-.8px}.admin-metrics article>small{color:#85887e;font-size:10px;line-height:1.5}
+.admin-content-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr);gap:18px}
+.admin-panel{min-width:0;padding:22px;border:1px solid #e7e5dc;border-radius:13px;background:#fff}
+.admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.admin-panel h2{margin:0 0 6px;font-size:17px;letter-spacing:-.4px}
+.admin-panel-heading .button{flex-shrink:0;padding:10px 12px;font-size:11px}
+.admin-course-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #efeee8;min-width:0}
+.admin-course-row img{width:62px;height:48px;flex-shrink:0;object-fit:cover;border-radius:7px}
+.admin-course-row>div{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0}
+.admin-course-row strong{font-size:11px;line-height:1.4}.admin-course-row small{color:#7e8278;font-size:10px}
+.admin-status{flex-shrink:0;padding:5px 7px;border-radius:20px;background:#f3eee2;color:#876f43;font-size:9px;font-weight:700}
+.admin-quick-panel{display:flex;flex-direction:column;gap:13px}
+.admin-quick-panel h2{margin:0 0 5px}
+.admin-action{display:flex;align-items:center;gap:11px;width:100%;padding:12px 0;border:0;border-top:1px solid #efeee8;background:transparent;text-align:left;cursor:pointer;color:#28352c}
+.admin-action>span:nth-child(2){display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.admin-action strong{font-size:11px}.admin-action small{color:#7e8278;font-size:10px;line-height:1.4}
+.admin-action>svg{flex-shrink:0;color:#658363}
+.admin-action-icon{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:9px;background:#edf2e9;color:#426b4d}
+@media(max-width:1050px){.admin-shell{grid-template-columns:190px minmax(0,1fr)}.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-content-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.admin-shell{grid-template-columns:minmax(0,1fr)}.admin-sidebar{position:static;min-height:0;padding:13px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.admin-brand{grid-column:1/-1;padding:0 5px 10px}.admin-side-label{grid-column:1/-1;padding:4px 5px}.admin-sidebar>button{justify-content:center;gap:6px;padding:10px 5px;font-size:10px}.admin-sidebar-bottom{grid-column:1/-1;margin-top:8px;padding:10px 5px 0}.admin-main{padding:24px 14px 40px}.admin-heading{align-items:flex-start;flex-direction:column}.admin-heading>.button{width:100%;justify-content:center}.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.admin-metrics article{padding:13px;gap:7px}.admin-metrics article>strong{font-size:21px}.admin-panel{padding:15px}.admin-panel-heading{align-items:flex-start;flex-direction:column}.admin-course-row img{width:50px;height:44px}.admin-course-row strong{font-size:10px}.admin-status{font-size:8px;padding:4px 5px}}

@@ -2297,3 +2297,4 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
   .hero-text { padding-top: 34vh; }
 }
 @media (max-width: 640px) { .hero-buttons > * { padding-block: 0 !important; height: 52px !important; min-height: 52px !important; flex: 0 0 auto !important; } }
+.hero::before { background-position: 68% 0 !important; }

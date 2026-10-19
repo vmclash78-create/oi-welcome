@@ -2195,3 +2195,47 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
   .course-card .course-art img { height: 200px; object-fit: cover; width: 100%; }
 }
 .section-kicker { animation: none !important; box-shadow: none !important; }
+
+/* ===== Animações do site de referência ===== */
+@keyframes ow-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes ow-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes ow-glow { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: .9; transform: scale(1.08); } }
+@keyframes ow-shine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+@keyframes ow-text { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@keyframes ow-ping { 75%,100% { opacity: 0; transform: scale(2.2); } }
+
+.benefits { display: block !important; overflow: hidden !important; padding: 16px 0 !important;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.ow-marquee { display: flex; width: max-content; animation: ow-marquee 26s linear infinite; }
+.benefits:hover .ow-marquee { animation-play-state: paused; }
+.ow-marquee-group { display: flex; align-items: center; gap: 40px; padding-right: 40px; flex-shrink: 0; }
+.ow-marquee-group > * { display: flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--ow-text); }
+.ow-marquee-group svg { color: var(--ow-cyan); }
+.ow-marquee-group > span { color: var(--ow-cyan); font-weight: 700; letter-spacing: .18em; font-size: 12px; }
+
+.hero-visual { animation: ow-float 6s ease-in-out infinite !important; }
+.hero-ring { animation: ow-glow 4s ease-in-out infinite !important; border-color: rgba(0,200,255,.35) !important; box-shadow: 0 0 60px rgba(0,120,255,.35); }
+.ring-two { animation-delay: 2s !important; }
+.floating-note { animation: ow-float 5s ease-in-out infinite !important; }
+.floating-note:nth-of-type(2n) { animation-delay: 1.5s !important; }
+
+.hero h1 em { background: linear-gradient(90deg, #38bdf8 0%, #2f7bff 25%, #e0f2fe 50%, #2f7bff 75%, #38bdf8 100%) !important;
+  background-size: 200% 100% !important; -webkit-background-clip: text !important; background-clip: text !important;
+  color: transparent !important; animation: ow-text 5s linear infinite !important; }
+
+.button-dark { position: relative; overflow: hidden; }
+.button-dark::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+  animation: ow-shine 3s ease-in-out infinite; }
+
+.eyebrow-dot { position: relative; }
+.eyebrow-dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--ow-cyan); animation: ow-ping 1.6s cubic-bezier(0,0,.2,1) infinite; }
+
+.site-shell::before { content: ""; position: fixed; width: 420px; height: 420px; top: -120px; right: -140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,102,255,.35), transparent 70%); filter: blur(30px); pointer-events: none; z-index: 0;
+  animation: ow-glow 7s ease-in-out infinite; }
+.course-art img { transition: transform .5s ease; }
+.course-card:hover .course-art img { transform: scale(1.06); }
+@media (prefers-reduced-motion: reduce) { .ow-marquee, .hero-visual, .button-dark::after { animation: none !important; } }
+.benefits .ow-marquee, .benefits .ow-marquee-group { display: flex !important; flex-wrap: nowrap !important; grid-template-columns: none !important; width: max-content !important; position: static !important; }
+.benefits .ow-marquee-group > * { display: flex !important; position: static !important; width: auto !important; min-width: 0 !important; max-width: none !important; padding: 0 !important; border: 0 !important; background: none !important; font-size: 14px !important; line-height: 1.2 !important; }

@@ -781,18 +781,16 @@ function Index() {
             </div>
           </section>
           <section className="benefits">
-            <span>APRENDA COM QUEM FAZ</span>
-            <div>
-              <ShieldCheck size={18} /> Conteúdo prático
-            </div>
-            <div>
-              <Clock3 size={18} /> No seu tempo
-            </div>
-            <div>
-              <PlayCircle size={18} /> Aulas sob demanda
-            </div>
-            <div>
-              <GraduationCap size={18} /> Evolução contínua
+            <div className="ow-marquee">
+              {[0, 1].map((k) => (
+                <div className="ow-marquee-group" key={k} aria-hidden={k === 1}>
+                  <span>APRENDA COM QUEM FAZ</span>
+                  <div><ShieldCheck size={18} /> Conteúdo prático</div>
+                  <div><Clock3 size={18} /> No seu tempo</div>
+                  <div><PlayCircle size={18} /> Aulas sob demanda</div>
+                  <div><GraduationCap size={18} /> Evolução contínua</div>
+                </div>
+              ))}
             </div>
           </section>
           <section className="catalog section-wrap" id="catalog">

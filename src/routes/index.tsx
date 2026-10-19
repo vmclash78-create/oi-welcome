@@ -481,6 +481,29 @@ function Index() {
     };
   }, []);
 
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || typeof IntersectionObserver === "undefined") return;
+    const root = document.documentElement;
+    root.classList.add("ow-motion-ready");
+    const targets = document.querySelectorAll(
+      ".section-heading, .benefits, .how-card, .creator-promo, .faq-item, .admin-metrics article, .admin-panel, .course-card",
+    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("ow-in-view");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" });
+    targets.forEach((element) => observer.observe(element));
+    return () => {
+      observer.disconnect();
+      root.classList.remove("ow-motion-ready");
+    };
+  }, []);
+
   const catalogCourses = liveCourses ?? courses;
   const filtered = useMemo(
     () =>

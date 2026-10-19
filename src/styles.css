@@ -2289,3 +2289,10 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
 /* Esconder visual antigo do hero (a pantera é o destaque) */
 @media (max-width: 900px) { .hero-visual { display: none !important; } }
 .social-proof { justify-content: center; }
+.hero::before { background-position: 50% 0 !important; background-size: auto 78% !important; filter: hue-rotate(-45deg) saturate(1.4) brightness(1) !important; }
+.hero::after { background: linear-gradient(180deg, rgba(5,7,13,.1) 0%, rgba(5,7,13,.45) 45%, var(--ow-bg) 85%) !important; }
+@media (max-width: 640px) {
+  .hero-buttons { flex-direction: column; align-items: stretch; gap: 12px !important; }
+  .hero-buttons > * { width: 100%; justify-content: center; white-space: nowrap; font-size: 12px !important; letter-spacing: .12em !important; min-height: 52px; }
+  .hero-text { padding-top: 34vh; }
+}

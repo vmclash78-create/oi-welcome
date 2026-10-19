@@ -2237,3 +2237,5 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
 .course-art img { transition: transform .5s ease; }
 .course-card:hover .course-art img { transform: scale(1.06); }
 @media (prefers-reduced-motion: reduce) { .ow-marquee, .hero-visual, .button-dark::after { animation: none !important; } }
+.benefits .ow-marquee, .benefits .ow-marquee-group { display: flex !important; flex-wrap: nowrap !important; grid-template-columns: none !important; width: max-content !important; position: static !important; }
+.benefits .ow-marquee-group > * { display: flex !important; position: static !important; width: auto !important; min-width: 0 !important; max-width: none !important; padding: 0 !important; border: 0 !important; background: none !important; font-size: 14px !important; line-height: 1.2 !important; }

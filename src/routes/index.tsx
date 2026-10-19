@@ -763,7 +763,7 @@ function Index() {
                   </div>
                   <button
                     aria-label="Abrir curso em destaque"
-                    onClick={() => setSelected(courses[0])}
+                    onClick={() => setSelected(courses[0] ?? null)}
                   >
                     <PlayCircle size={23} />
                   </button>

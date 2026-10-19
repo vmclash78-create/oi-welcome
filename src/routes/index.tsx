@@ -34,7 +34,7 @@ type Course = {
   accent: string;
   mark: string;
   description: string;
-  thumbnailUrl?: string | undefined;
+  thumbnailUrl?: string;
   imageUrl?: string;
   photoUrl?: string;
 };
@@ -763,7 +763,7 @@ function Index() {
                   </div>
                   <button
                     aria-label="Abrir curso em destaque"
-                    onClick={() => setSelected(courses[0] ?? null)}
+                    onClick={() => setSelected(courses[0])}
                   >
                     <PlayCircle size={23} />
                   </button>
@@ -781,16 +781,18 @@ function Index() {
             </div>
           </section>
           <section className="benefits">
-            <div className="ow-marquee">
-              {[0, 1].map((k) => (
-                <div className="ow-marquee-group" key={k} aria-hidden={k === 1}>
-                  <span>APRENDA COM QUEM FAZ</span>
-                  <div><ShieldCheck size={18} /> Conteúdo prático</div>
-                  <div><Clock3 size={18} /> No seu tempo</div>
-                  <div><PlayCircle size={18} /> Aulas sob demanda</div>
-                  <div><GraduationCap size={18} /> Evolução contínua</div>
-                </div>
-              ))}
+            <span>APRENDA COM QUEM FAZ</span>
+            <div>
+              <ShieldCheck size={18} /> Conteúdo prático
+            </div>
+            <div>
+              <Clock3 size={18} /> No seu tempo
+            </div>
+            <div>
+              <PlayCircle size={18} /> Aulas sob demanda
+            </div>
+            <div>
+              <GraduationCap size={18} /> Evolução contínua
             </div>
           </section>
           <section className="catalog section-wrap" id="catalog">

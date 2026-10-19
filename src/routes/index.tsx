@@ -36,6 +36,7 @@ type Course = {
   description: string;
   thumbnailUrl?: string;
   imageUrl?: string;
+  photoUrl?: string;
 };
 
 type InstructorStatus = "none" | "pending" | "approved" | "rejected";
@@ -73,6 +74,7 @@ const courses: Course[] = [
     id: 1,
     title: "Design de interfaces do zero",
     imageUrl: "/images/course-design.svg",
+    photoUrl: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&w=1000&q=85",
     teacher: "Marina Costa",
     category: "Design",
     level: "Iniciante",
@@ -90,6 +92,7 @@ const courses: Course[] = [
     id: 2,
     title: "Marketing digital na prática",
     imageUrl: "/images/course-marketing.svg",
+    photoUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=85",
     teacher: "Rafael Mendes",
     category: "Marketing",
     level: "Intermediário",
@@ -107,6 +110,7 @@ const courses: Course[] = [
     id: 3,
     title: "Programação web com React",
     imageUrl: "/images/course-code.svg",
+    photoUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=85",
     teacher: "Lucas Almeida",
     category: "Tecnologia",
     level: "Intermediário",
@@ -123,6 +127,7 @@ const courses: Course[] = [
     id: 4,
     title: "Fotografia para negócios",
     imageUrl: "/images/course-photo.svg",
+    photoUrl: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=85",
     teacher: "Camila Rocha",
     category: "Criatividade",
     level: "Iniciante",
@@ -510,7 +515,7 @@ function Index() {
         aria-label={"Detalhes: " + course.title}
       >
         {(course.thumbnailUrl || course.imageUrl) && (
-          <img className="course-thumb" src={course.thumbnailUrl || course.imageUrl} alt="" loading="lazy" />
+          <img className="course-thumb" src={course.photoUrl || course.thumbnailUrl || course.imageUrl} onError={(event) => { if (course.imageUrl && event.currentTarget.getAttribute("data-fallback") !== "used") { event.currentTarget.setAttribute("data-fallback", "used"); event.currentTarget.src = course.imageUrl; } }} alt="" loading="lazy" />
         )}
         <span className="art-tag">{course.category}</span>
         <strong>{course.mark}</strong>
@@ -1256,7 +1261,7 @@ function Index() {
               style={{ background: selected.color, color: selected.accent }}
             >
               {(selected.thumbnailUrl || selected.imageUrl) && (
-                <img className="modal-thumb" src={selected.thumbnailUrl || selected.imageUrl} alt="" />
+                <img className="modal-thumb" src={selected.photoUrl || selected.thumbnailUrl || selected.imageUrl} onError={(event) => { if (selected.imageUrl && event.currentTarget.getAttribute("data-fallback") !== "used") { event.currentTarget.setAttribute("data-fallback", "used"); event.currentTarget.src = selected.imageUrl; } }} alt="" />
               )}
               <span>{selected.category}</span>
               <strong>{selected.mark}</strong>

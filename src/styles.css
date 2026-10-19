@@ -2296,3 +2296,4 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
   .hero-buttons > * { width: 100%; justify-content: center; white-space: nowrap; font-size: 12px !important; letter-spacing: .12em !important; min-height: 52px; }
   .hero-text { padding-top: 34vh; }
 }
+@media (max-width: 640px) { .hero-buttons > * { padding-block: 0 !important; height: 52px !important; min-height: 52px !important; flex: 0 0 auto !important; } }

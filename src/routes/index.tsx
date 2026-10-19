@@ -509,8 +509,8 @@ function Index() {
         }}
         aria-label={"Detalhes: " + course.title}
       >
-        {course.thumbnailUrl && (
-          <img className="course-thumb" src={course.thumbnailUrl} alt="" loading="lazy" />
+        {(course.thumbnailUrl || course.imageUrl) && (
+          <img className="course-thumb" src={course.thumbnailUrl || course.imageUrl} alt="" loading="lazy" />
         )}
         <span className="art-tag">{course.category}</span>
         <strong>{course.mark}</strong>
@@ -622,6 +622,9 @@ function Index() {
             }}
           >
             Para produtores
+          </button>
+          <button className={view === "admin" ? "nav-item nav-active" : "nav-item"} onClick={() => { if (currentUser) setView("admin"); else openAuth("signin"); setMenuOpen(false); }}>
+            Administração
           </button>
           <button
             className="nav-item mobile-auth-link"
@@ -919,6 +922,40 @@ function Index() {
                   de receber cobranças reais.
                 </p>
               </details>
+            </div>
+          </section>
+        </main>
+      )}
+      {view === "admin" && (
+        <main className="admin-shell">
+          <aside className="admin-sidebar">
+            <div className="admin-brand"><GraduationCap size={24}/><span>oi-welcome</span></div>
+            <span className="admin-side-label">GERENCIAMENTO</span>
+            <button className="admin-side-active"><BookOpen size={17}/> Painel geral</button>
+            <button onClick={() => setView("creator")}><GraduationCap size={17}/> Cursos</button>
+            <button onClick={() => showNotice("A gestão de alunos depende das matrículas registradas.")}><ShieldCheck size={17}/> Alunos</button>
+            <button onClick={() => showNotice("Os pedidos serão exibidos após integrar os pagamentos.")}><CircleHelp size={17}/> Pedidos</button>
+            <button onClick={() => showNotice("Relatórios reais dependem dos pedidos confirmados.")}><Clock3 size={17}/> Relatórios</button>
+            <div className="admin-sidebar-bottom"><span>Conectado como</span><strong>{currentUser?.email || "Administrador"}</strong></div>
+          </aside>
+          <section className="admin-main">
+            <div className="admin-heading"><div><span className="section-kicker">VISÃO GERAL</span><h1>Painel administrativo</h1><p>Gerencie a plataforma e acompanhe os principais indicadores.</p></div><button className="button button-dark" onClick={() => setView("creator")}><BookOpen size={16}/> Gerenciar cursos</button></div>
+            <div className="admin-demo-note"><CircleHelp size={17}/><span><strong>Painel inicial</strong> — vendas, pedidos e matrículas precisam da integração de pagamentos para exibir dados reais.</span></div>
+            <div className="admin-metrics">
+              <article><span>Receita total</span><strong>R$ 0,00</strong><small>Pedidos pagos</small></article>
+              <article><span>Pedidos</span><strong>0</strong><small>Transações confirmadas</small></article>
+              <article><span>Alunos</span><strong>—</strong><small>Matrículas registradas</small></article>
+              <article><span>Cursos publicados</span><strong>{liveCourses?.length ?? "—"}</strong><small>Catálogo conectado</small></article>
+            </div>
+            <div className="admin-content-grid">
+              <section className="admin-panel"><div className="admin-panel-heading"><div><h2>Cursos da plataforma</h2><p>Conteúdo publicado e demonstrações</p></div><button className="button button-outline" onClick={() => setView("catalog")}>Ver catálogo <ArrowRight size={15}/></button></div>
+                {(liveCourses ?? courses).slice(0,5).map((course) => <div className="admin-course-row" key={course.id}><img src={course.thumbnailUrl || course.imageUrl || "/images/course-design.svg"} alt="" loading="lazy"/><div><strong>{course.title}</strong><small>{course.teacher} · {course.category}</small></div><span className="admin-status">{liveCourses ? "Publicado" : "Demo"}</span></div>)}
+              </section>
+              <section className="admin-panel admin-quick-panel"><span className="section-kicker">ATALHOS</span><h2>Ações rápidas</h2>
+                <button className="admin-action" onClick={() => setView("creator")}><span className="admin-action-icon"><BookOpen size={19}/></span><span><strong>Gerenciar cursos</strong><small>Criar e organizar conteúdo</small></span><ArrowRight size={16}/></button>
+                <button className="admin-action" onClick={() => setView("student")}><span className="admin-action-icon"><GraduationCap size={19}/></span><span><strong>Área do aluno</strong><small>Experiência de aprendizagem</small></span><ArrowRight size={16}/></button>
+                <button className="admin-action" onClick={() => showNotice("Configure papel de administrador e políticas RLS no Supabase antes de liberar ações privilegiadas.")}><span className="admin-action-icon"><ShieldCheck size={19}/></span><span><strong>Segurança</strong><small>Permissões administrativas</small></span><ArrowRight size={16}/></button>
+              </section>
             </div>
           </section>
         </main>

@@ -176,7 +176,7 @@ function Index() {
   const [category, setCategory] = useState("Todos");
   const [selected, setSelected] = useState<Course | null>(null);
   const [notice, setNotice] = useState("");
-  const [view, setView] = useState<"catalog" | "student" | "creator">("catalog");
+  const [view, setView] = useState<"catalog" | "student" | "creator" | "admin">("catalog");
   const [library, setLibrary] = useState<Array<Course["id"]>>([3]);
   const [progress, setProgress] = useState<Record<string, number>>({ "3": 35 });
   const [menuOpen, setMenuOpen] = useState(false);

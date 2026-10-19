@@ -2194,3 +2194,4 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
   .course-card .course-art { max-height: 200px; overflow: hidden; }
   .course-card .course-art img { height: 200px; object-fit: cover; width: 100%; }
 }
+.section-kicker { animation: none !important; box-shadow: none !important; }

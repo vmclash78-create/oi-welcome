@@ -835,24 +835,26 @@ function Index() {
               </button>
             </div>
           </section>
+          <section className="how section-wrap" aria-labelledby="how-title">
+            <div className="section-heading how-heading">
+              <div><span className="section-kicker">COMO FUNCIONA</span><h2 id="how-title">Do primeiro clique à evolução.</h2><p>Três passos simples para começar a aprender hoje.</p></div>
+            </div>
+            <div className="how-grid">
+              {[
+                { n: "01", img: "/images/step-choose.svg", t: "Escolha seu curso", d: "Busque por tema ou instrutor e compare o conteúdo antes de decidir." },
+                { n: "02", img: "/images/step-learn.svg", t: "Aprenda no seu ritmo", d: "Assista às aulas quando quiser e retome de onde parou." },
+                { n: "03", img: "/images/step-grow.svg", t: "Acompanhe sua evolução", d: "Veja seu progresso aula a aula e avance com constância." },
+              ].map((step) => (
+                <article className="how-card" key={step.n}>
+                  <div className="how-media"><img src={step.img} alt="" loading="lazy" /><span className="how-number">{step.n}</span></div>
+                  <h3>{step.t}</h3><p>{step.d}</p>
+                </article>
+              ))}
+            </div>
+          </section>
           <section className="creator-promo">
             <div className="promo-visual">
-              <div className="dashboard-art">
-                <div className="dash-top">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-                <div className="dash-line" />
-                <div className="dash-line short" />
-                <div className="dash-bars">
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              </div>
+              <img className="promo-image" src="/images/creator-promo.svg" alt="Painel do produtor com métricas, módulos e aulas" loading="lazy" />
               <div className="promo-cap">
                 <GraduationCap size={27} />
               </div>

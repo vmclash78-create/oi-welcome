@@ -34,7 +34,7 @@ type Course = {
   accent: string;
   mark: string;
   description: string;
-  thumbnailUrl?: string;
+  thumbnailUrl?: string | undefined;
   imageUrl?: string;
   photoUrl?: string;
 };
@@ -763,7 +763,7 @@ function Index() {
                   </div>
                   <button
                     aria-label="Abrir curso em destaque"
-                    onClick={() => setSelected(courses[0])}
+                    onClick={() => setSelected(courses[0] ?? null)}
                   >
                     <PlayCircle size={23} />
                   </button>

@@ -2239,3 +2239,62 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--o
 @media (prefers-reduced-motion: reduce) { .ow-marquee, .hero-visual, .button-dark::after { animation: none !important; } }
 .benefits .ow-marquee, .benefits .ow-marquee-group { display: flex !important; flex-wrap: nowrap !important; grid-template-columns: none !important; width: max-content !important; position: static !important; }
 .benefits .ow-marquee-group > * { display: flex !important; position: static !important; width: auto !important; min-width: 0 !important; max-width: none !important; padding: 0 !important; border: 0 !important; background: none !important; font-size: 14px !important; line-height: 1.2 !important; }
+
+/* ===== Visual completo estilo PhanterPay (em azul) ===== */
+.site-shell, .site-shell p, .site-shell button, .site-shell input, .site-shell a { font-family: "General Sans", system-ui, sans-serif !important; }
+.site-shell h1, .site-shell h2, .site-shell h3, .logo, .course-title { font-family: "Clash Display", "General Sans", sans-serif !important; letter-spacing: -.01em; }
+.logo > *:first-child { background: radial-gradient(circle, rgba(0,160,255,.35), transparent 70%) !important; box-shadow: 0 0 22px rgba(0,160,255,.5); border: 1px solid rgba(0,200,255,.4) !important; }
+
+/* Hero com pantera */
+.hero { position: relative; isolation: isolate; overflow: hidden; min-height: 92vh; text-align: center; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -2;
+  background: url("/images/panther.png") center top / cover no-repeat;
+  filter: hue-rotate(-45deg) saturate(1.3) brightness(.75);
+  animation: ow-panther 14s ease-in-out infinite; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(ellipse at 50% 30%, transparent 0%, rgba(5,7,13,.55) 55%, var(--ow-bg) 100%),
+              linear-gradient(180deg, rgba(5,7,13,.2) 0%, rgba(5,7,13,.5) 50%, var(--ow-bg) 100%); }
+@keyframes ow-panther { 0%,100% { transform: scale(1.04); } 50% { transform: scale(1.1) translateY(-8px); } }
+.hero-text { position: relative; z-index: 1; padding-top: 22vh; }
+.hero h1 { font-weight: 600 !important; }
+.hero-buttons { justify-content: center; }
+
+/* Botões pílula maiúsculos */
+.button-dark, .button { border-radius: 999px !important; text-transform: uppercase; letter-spacing: .14em; font-weight: 600 !important; font-size: 13px !important; padding-inline: 26px !important; }
+.button-dark { background: linear-gradient(135deg, #ffffff 0%, #cfe6ff 60%, #7cc4ff 100%) !important; color: #05070d !important; box-shadow: 0 0 30px rgba(0,160,255,.45) !important; }
+.button-dark svg { color: #05070d !important; }
+.button:not(.button-dark) { background: rgba(5,7,13,.55) !important; backdrop-filter: blur(10px); border: 1px solid rgba(125,211,252,.35) !important; }
+
+/* Kicker com traços */
+.eyebrow, .section-kicker { background: none !important; border: 0 !important; letter-spacing: .32em !important; color: #7dd3fc !important; display: inline-flex; align-items: center; gap: 14px; }
+.eyebrow::before, .eyebrow::after, .section-kicker::before, .section-kicker::after { content: ""; width: 22px; height: 1px; background: currentColor; opacity: .7; }
+.eyebrow-dot { display: none !important; }
+
+/* Marquee grande */
+.benefits { padding: 26px 0 !important; background: #04060b !important; border-block: 1px solid rgba(255,255,255,.08) !important; }
+.benefits .ow-marquee-group > * { font-family: "General Sans", sans-serif !important; font-size: 20px !important; font-weight: 500 !important; text-transform: uppercase; letter-spacing: .2em !important; color: #e2e8f0 !important; }
+.benefits .ow-marquee-group > *::before { content: "•"; color: var(--ow-cyan); margin-right: 18px; }
+.benefits .ow-marquee-group svg { display: none; }
+.benefits .ow-marquee { animation-duration: 32s; }
+
+/* Grade de fundo nas seções */
+.catalog, .section-wrap { position: relative; }
+.catalog::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgba(59,130,246,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,.07) 1px, transparent 1px);
+  background-size: 48px 48px; mask-image: radial-gradient(ellipse at top, #000 20%, transparent 75%); }
+
+/* Revelar ao rolar mais forte */
+.ow-motion-ready .section-heading, .ow-motion-ready .course-card, .ow-motion-ready .how-card { transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1), filter .8s ease !important; }
+
+/* Esconder visual antigo do hero (a pantera é o destaque) */
+@media (max-width: 900px) { .hero-visual { display: none !important; } }
+.social-proof { justify-content: center; }
+.hero::before { background-position: 50% 0 !important; background-size: auto 78% !important; filter: hue-rotate(-45deg) saturate(1.4) brightness(1) !important; }
+.hero::after { background: linear-gradient(180deg, rgba(5,7,13,.1) 0%, rgba(5,7,13,.45) 45%, var(--ow-bg) 85%) !important; }
+@media (max-width: 640px) {
+  .hero-buttons { flex-direction: column; align-items: stretch; gap: 12px !important; }
+  .hero-buttons > * { width: 100%; justify-content: center; white-space: nowrap; font-size: 12px !important; letter-spacing: .12em !important; min-height: 52px; }
+  .hero-text { padding-top: 34vh; }
+}
+@media (max-width: 640px) { .hero-buttons > * { padding-block: 0 !important; height: 52px !important; min-height: 52px !important; flex: 0 0 auto !important; } }
+.hero::before { background-position: 68% 0 !important; }

@@ -34,7 +34,7 @@ type Course = {
   accent: string;
   mark: string;
   description: string;
-  thumbnailUrl?: string;
+  thumbnailUrl?: string | undefined;
   imageUrl?: string;
   photoUrl?: string;
 };
